@@ -1,16 +1,17 @@
 import { serve } from "@hono/node-server";
 import { createApp } from "./app.js";
+import { loadConfig } from "./config.js";
 
-const port = Number(process.env.PORT ?? 3000);
-const hostname = process.env.HOST ?? "127.0.0.1";
+const config = loadConfig();
+const app = await createApp({ publicUrl: config.PUBLIC_URL });
 
 serve(
 	{
-		fetch: createApp().fetch,
-		hostname,
-		port,
+		fetch: app.fetch,
+		hostname: config.HOST,
+		port: config.PORT,
 	},
 	(info) => {
-		console.log(`DevoraIndex Core listening on http://${hostname}:${info.port}`);
+		console.log(`DevoraIndex Core listening on http://${config.HOST}:${info.port}`);
 	},
 );
